@@ -1,0 +1,3123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMFINITY // MAINTENANCE SYSTEM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff00ff;
+            --neon-green: #39ff14;
+            --neon-yellow: #fff01f;
+            --neon-red: #ff073a;
+            --neon-purple: #b026ff;
+            --neon-orange: #ff8c00;
+            --bg-dark: #0a0a0f;
+            --bg-panel: #0f0f1a;
+            --bg-card: #151520;
+            --text-primary: #e0e0ff;
+            --text-secondary: #8b8ba7;
+            --grid-color: rgba(0, 243, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Grid Background */
+        .grid-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            perspective: 500px;
+            transform-style: preserve-3d;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0) rotateX(60deg); }
+            100% { transform: translateY(50px) rotateX(60deg); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            animation: floatUp 10s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { 
+                transform: translateY(100vh) translateX(0); 
+                opacity: 0; 
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-10vh) translateX(50px); 
+                opacity: 0; 
+            }
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.3;
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--neon-pink);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--neon-cyan);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(30px, 9999px, 10px, 0); }
+            20% { clip: rect(80px, 9999px, 90px, 0); }
+            40% { clip: rect(10px, 9999px, 50px, 0); }
+            60% { clip: rect(60px, 9999px, 20px, 0); }
+            80% { clip: rect(40px, 9999px, 70px, 0); }
+            100% { clip: rect(90px, 9999px, 30px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(60px, 9999px, 30px, 0); }
+            20% { clip: rect(10px, 9999px, 80px, 0); }
+            40% { clip: rect(50px, 9999px, 20px, 0); }
+            60% { clip: rect(30px, 9999px, 60px, 0); }
+            80% { clip: rect(70px, 9999px, 40px, 0); }
+            100% { clip: rect(20px, 9999px, 90px, 0); }
+        }
+
+        /* Login Screen */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .login-box {
+            background: rgba(15, 15, 26, 0.9);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 0;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            box-shadow: 
+                0 0 20px rgba(0, 243, 255, 0.3),
+                inset 0 0 20px rgba(0, 243, 255, 0.05);
+            animation: borderPulse 3s ease-in-out infinite;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 20px) 0, 
+                100% 20px, 
+                100% 100%, 
+                20px 100%, 
+                0 calc(100% - 20px)
+            );
+        }
+
+        @keyframes borderPulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.3), inset 0 0 20px rgba(0, 243, 255, 0.05);
+                border-color: var(--neon-cyan);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(0, 243, 255, 0.6), inset 0 0 30px rgba(0, 243, 255, 0.1);
+                border-color: var(--neon-pink);
+            }
+        }
+
+        .login-box h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .login-box .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--neon-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 10px) 0, 
+                100% 10px, 
+                100% 100%, 
+                10px 100%, 
+                0 calc(100% - 10px)
+            );
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4), inset 0 0 10px rgba(0, 243, 255, 0.1);
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        /* Neon Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 15px) 0, 
+                100% 15px, 
+                100% 100%, 
+                15px 100%, 
+                0 calc(100% - 15px)
+            );
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.6);
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-danger {
+            color: var(--neon-red);
+            border-color: var(--neon-red);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 7, 58, 0.2);
+            box-shadow: 0 0 30px rgba(255, 7, 58, 0.6);
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+
+        .btn-success {
+            color: var(--neon-green);
+            border-color: var(--neon-green);
+        }
+
+        .btn-success:hover {
+            background: rgba(57, 255, 20, 0.2);
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.6);
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+        }
+
+        /* Main Application Layout */
+        #mainApp {
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar {
+            background: rgba(15, 15, 26, 0.95);
+            border-bottom: 1px solid var(--neon-cyan);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            letter-spacing: 0.1em;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: rgba(15, 15, 26, 0.95);
+            border-right: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 243, 255, 0.03) 50%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav li {
+            margin: 0.5rem 1rem;
+        }
+
+        .sidebar nav a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            position: relative;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar nav a::before {
+            content: '▸';
+            position: absolute;
+            left: -10px;
+            opacity: 0;
+            color: var(--neon-cyan);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar nav a:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            padding-left: 2rem;
+            border-left-color: var(--neon-cyan);
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.1), transparent);
+        }
+
+        .sidebar nav a:hover::before {
+            left: 0.5rem;
+            opacity: 1;
+        }
+
+        .sidebar nav a.active {
+            color: var(--neon-cyan);
+            border-left-color: var(--neon-cyan);
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.15), transparent);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            background: transparent;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            letter-spacing: 0.05em;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 20px) 0, 
+                100% 20px, 
+                100% 100%, 
+                20px 100%, 
+                0 calc(100% - 20px)
+            );
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-cyan));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            animation: rotateBorder 3s linear infinite;
+        }
+
+        @keyframes rotateBorder {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .card .value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 20px var(--neon-cyan);
+            animation: numberPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes numberPulse {
+            0%, 100% { text-shadow: 0 0 20px var(--neon-cyan); }
+            50% { text-shadow: 0 0 40px var(--neon-cyan), 0 0 60px var(--neon-cyan); }
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            background: var(--bg-card);
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            overflow: hidden;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 20px) 0, 
+                100% 20px, 
+                100% 100%, 
+                20px 100%, 
+                0 calc(100% - 20px)
+            );
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        th {
+            background: rgba(0, 243, 255, 0.1);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(0, 243, 255, 0.05);
+            transform: scale(1.01);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border: 1px solid;
+            position: relative;
+            overflow: hidden;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 5px currentColor; }
+            50% { box-shadow: 0 0 15px currentColor, 0 0 25px currentColor; }
+        }
+
+        .badge-low { 
+            color: var(--neon-cyan); 
+            border-color: var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.1);
+        }
+        .badge-medium { 
+            color: var(--neon-yellow); 
+            border-color: var(--neon-yellow);
+            background: rgba(255, 240, 31, 0.1);
+        }
+        .badge-high { 
+            color: var(--neon-orange); 
+            border-color: var(--neon-orange);
+            background: rgba(255, 140, 0, 0.1);
+        }
+        .badge-critical { 
+            color: var(--neon-red); 
+            border-color: var(--neon-red);
+            background: rgba(255, 7, 58, 0.1);
+            animation: criticalPulse 0.5s ease-in-out infinite;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { 
+                box-shadow: 0 0 5px var(--neon-red);
+                background: rgba(255, 7, 58, 0.1);
+            }
+            50% { 
+                box-shadow: 0 0 20px var(--neon-red), 0 0 40px var(--neon-red);
+                background: rgba(255, 7, 58, 0.3);
+            }
+        }
+
+        .badge-open { 
+            color: var(--neon-purple); 
+            border-color: var(--neon-purple);
+            background: rgba(176, 38, 255, 0.1);
+        }
+        .badge-assigned { 
+            color: var(--neon-cyan); 
+            border-color: var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.1);
+        }
+        .badge-progress { 
+            color: var(--neon-yellow); 
+            border-color: var(--neon-yellow);
+            background: rgba(255, 240, 31, 0.1);
+        }
+        .badge-waiting { 
+            color: var(--neon-orange); 
+            border-color: var(--neon-orange);
+            background: rgba(255, 140, 0, 0.1);
+        }
+        .badge-resolved { 
+            color: var(--neon-green); 
+            border-color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.1);
+        }
+        .badge-closed { 
+            color: var(--text-secondary); 
+            border-color: var(--text-secondary);
+            background: rgba(139, 139, 167, 0.1);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 15, 0.9);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-panel);
+            border: 1px solid var(--neon-cyan);
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.3);
+            animation: modalSlideIn 0.4s ease;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 30px) 0, 
+                100% 30px, 
+                100% 100%, 
+                30px 100%, 
+                0 calc(100% - 30px)
+            );
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .close-btn {
+            background: none;
+            border: 1px solid var(--neon-pink);
+            color: var(--neon-pink);
+            width: 36px;
+            height: 36px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            clip-path: polygon(20% 0%, 100% 0, 100% 80%, 80% 100%, 0 100%, 0% 20%);
+        }
+
+        .close-btn:hover {
+            background: var(--neon-pink);
+            color: var(--bg-dark);
+            transform: rotate(90deg);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 10px) 0, 
+                100% 10px, 
+                100% 100%, 
+                10px 100%, 
+                0 calc(100% - 10px)
+            );
+        }
+
+        .alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: alertShine 2s infinite;
+        }
+
+        @keyframes alertShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .alert-success {
+            color: var(--neon-green);
+            border-color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.1);
+        }
+
+        .alert-error {
+            color: var(--neon-red);
+            border-color: var(--neon-red);
+            background: rgba(255, 7, 58, 0.1);
+        }
+
+        /* Filter Buttons */
+        .filter-container {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.5rem 1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 8px) 0, 
+                100% 8px, 
+                100% 100%, 
+                8px 100%, 
+                0 calc(100% - 8px)
+            );
+        }
+
+        .filter-btn:hover {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        .filter-btn.active {
+            background: var(--neon-cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        /* Ticket Detail */
+        .ticket-detail {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 15px) 0, 
+                100% 15px, 
+                100% 100%, 
+                15px 100%, 
+                0 calc(100% - 15px)
+            );
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .info-label {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .history-item {
+            background: rgba(0, 243, 255, 0.05);
+            border-left: 3px solid var(--neon-cyan);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+
+        .history-item::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--neon-cyan);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .history-item .timestamp {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: var(--neon-pink);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Low Stock Warning */
+        .low-stock {
+            animation: lowStockPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes lowStockPulse {
+            0%, 100% { 
+                background: rgba(255, 7, 58, 0.1);
+                box-shadow: inset 0 0 10px rgba(255, 7, 58, 0.2);
+            }
+            50% { 
+                background: rgba(255, 7, 58, 0.2);
+                box-shadow: inset 0 0 20px rgba(255, 7, 58, 0.4);
+            }
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 0;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        /* View transitions */
+        .view {
+            animation: viewFadeIn 0.5s ease;
+        }
+
+        @keyframes viewFadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Knowledge Base Search */
+        .search-box {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 15px) 0, 
+                100% 15px, 
+                100% 100%, 
+                15px 100%, 
+                0 calc(100% - 15px)
+            );
+        }
+
+        .search-box input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--neon-cyan);
+        }
+
+        /* Article Cards in Knowledge Base */
+        .article-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 20px) 0, 
+                100% 20px, 
+                100% 100%, 
+                20px 100%, 
+                0 calc(100% - 20px)
+            );
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .article-card:hover::before {
+            left: 100%;
+        }
+
+        .article-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .cards {
+                grid-template-columns: 1fr;
+            }
+            .navbar h1 {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Visual Effects Layers -->
+    <div class="grid-background"></div>
+    <div class="particles" id="particles"></div>
+    <div class="scanlines"></div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h2 class="glitch" data-text="SIMFINITY">SIMFINITY</h2>
+            <div class="subtitle">Maintenance System v2.0</div>
+            <div id="loginAlert"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" required placeholder="ENTER USER_ID">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="ENTER ACCESS_KEY">
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Initialize Session</button>
+            </form>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-secondary); font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em;">
+                DEFAULT: admin / admin
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="hidden">
+        <!-- Navbar -->
+        <div class="navbar">
+            <h1>◈ SIMFINITY ◈</h1>
+            <div class="user-info">
+                <span style="color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan);">
+                    <span style="color: var(--neon-pink);">◉</span> <span id="currentUserName"></span> 
+                    <span style="color: var(--text-secondary);">[</span><span id="currentUserRole"></span><span style="color: var(--text-secondary);">]</span>
+                </span>
+                <button onclick="logout()" class="btn btn-danger btn-sm">Terminate</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showView('dashboard')" class="nav-link active">◈ Dashboard</a></li>
+                        <li><a href="#" onclick="showView('tickets')" class="nav-link">◈ Tickets</a></li>
+                        <li><a href="#" onclick="showView('inventory')" class="nav-link">◈ Inventory</a></li>
+                        <li><a href="#" onclick="showView('assets')" class="nav-link">◈ Assets</a></li>
+                        <li><a href="#" onclick="showView('reports')" class="nav-link">◈ Reports</a></li>
+                        <li><a href="#" onclick="showView('knowledge')" class="nav-link">◈ Knowledge Base</a></li>
+                        <li id="usersLink" class="hidden"><a href="#" onclick="showView('users')" class="nav-link">◈ User Control</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div id="alertContainer"></div>
+
+                <!-- Dashboard View -->
+                <div id="dashboardView" class="view">
+                    <div class="page-header">
+                        <h2>SYSTEM OVERVIEW</h2>
+                    </div>
+                    <div class="cards">
+                        <div class="card">
+                            <h3>Open Tickets</h3>
+                            <div class="value" id="openTicketsCount">0</div>
+                        </div>
+                        <div class="card">
+                            <h3>Critical Issues</h3>
+                            <div class="value" id="criticalCount" style="color: var(--neon-red); text-shadow: 0 0 20px var(--neon-red);">0</div>
+                        </div>
+                        <div class="card">
+                            <h3>My Assigned</h3>
+                            <div class="value" id="myTicketsCount" style="color: var(--neon-green); text-shadow: 0 0 20px var(--neon-green);">0</div>
+                        </div>
+                        <div class="card">
+                            <h3>Low Stock Items</h3>
+                            <div class="value" id="lowStockCount" style="color: var(--neon-yellow); text-shadow: 0 0 20px var(--neon-yellow);">0</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom: 1rem;">Recent Tickets</h3>
+                        <table id="recentTicketsTable">
+                            <thead>
+                                <tr>
+                                    <th>Ticket #</th>
+                                    <th>Asset</th>
+                                    <th>Category</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Assigned To</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tickets View -->
+                <div id="ticketsView" class="view hidden">
+                    <div class="page-header">
+                        <h2>TICKET MANAGEMENT</h2>
+                        <button onclick="openTicketModal()" class="btn">+ New Ticket</button>
+                    </div>
+                    
+                    <div class="filter-container">
+                        <button class="filter-btn active" onclick="filterTickets('all')" id="filterAll">All Tickets</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'Open')" id="filterOpen">Open</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'Assigned')" id="filterAssigned">Assigned</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'In Progress')" id="filterProgress">In Progress</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'Resolved')" id="filterResolved">Resolved</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'Closed')" id="filterClosed">Closed</button>
+                        <span style="width: 20px;"></span>
+                        <button class="filter-btn" onclick="filterTickets('priority', 'Critical')" id="filterCritical" style="border-color: var(--neon-red); color: var(--neon-red);">Critical</button>
+                        <button class="filter-btn" onclick="filterTickets('priority', 'High')" id="filterHigh" style="border-color: var(--neon-orange); color: var(--neon-orange);">High</button>
+                        <button class="filter-btn" onclick="filterTickets('priority', 'Medium')" id="filterMedium" style="border-color: var(--neon-yellow); color: var(--neon-yellow);">Medium</button>
+                        <button class="filter-btn" onclick="filterTickets('priority', 'Low')" id="filterLow" style="border-color: var(--neon-cyan); color: var(--neon-cyan);">Low</button>
+                    </div>
+                    
+                    <div class="card" style="padding: 0; background: transparent; border: none;">
+                        <table id="ticketsTable">
+                            <thead>
+                                <tr>
+                                    <th>Ticket #</th>
+                                    <th>Asset</th>
+                                    <th>Location</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Assigned To</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Inventory View -->
+                <div id="inventoryView" class="view hidden">
+                    <div class="page-header">
+                        <h2>INVENTORY DATABASE</h2>
+                        <button onclick="openPartModal()" class="btn">+ Add Part</button>
+                    </div>
+                    <div class="card" style="padding: 0; background: transparent; border: none;">
+                        <table id="inventoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Part Name</th>
+                                    <th>SKU</th>
+                                    <th>Category</th>
+                                    <th>Stock</th>
+                                    <th>Reorder Level</th>
+                                    <th>Unit Cost</th>
+                                    <th>Location</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Assets View -->
+                <div id="assetsView" class="view hidden">
+                    <div class="page-header">
+                        <h2>ASSET REGISTRY</h2>
+                        <button onclick="openAssetModal()" class="btn">+ Add Asset</button>
+                    </div>
+                    <div class="card" style="padding: 0; background: transparent; border: none;">
+                        <table id="assetsTable">
+                            <thead>
+                                <tr>
+                                    <th>Asset Code</th>
+                                    <th>Name</th>
+                                    <th>Model</th>
+                                    <th>Serial Number</th>
+                                    <th>Location</th>
+                                    <th>Category</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Reports View -->
+                <div id="reportsView" class="view hidden">
+                    <div class="page-header">
+                        <h2>ANALYTICS & REPORTS</h2>
+                    </div>
+                    
+                    <div class="filter-container">
+                        <button class="filter-btn active" onclick="switchAnalyticsTab('overview')" id="tabOverview">Overview</button>
+                        <button class="filter-btn" onclick="switchAnalyticsTab('downtime')" id="tabDowntime">Downtime Analysis</button>
+                        <button class="filter-btn" onclick="switchAnalyticsTab('failures')" id="tabFailures">Failure Frequency</button>
+                        <button class="filter-btn" onclick="switchAnalyticsTab('technicians')" id="tabTechnicians">Team Performance</button>
+                        <button class="filter-btn" onclick="switchAnalyticsTab('resolution')" id="tabResolution">Resolution Times</button>
+                    </div>
+                    
+                    <!-- Overview Tab -->
+                    <div id="analyticsOverview" class="analytics-tab">
+                        <div class="cards">
+                            <div class="card">
+                                <h3>Total Tickets</h3>
+                                <div class="value" id="totalTickets">0</div>
+                            </div>
+                            <div class="card">
+                                <h3>Closed Tickets</h3>
+                                <div class="value" id="closedTickets" style="color: var(--neon-green); text-shadow: 0 0 20px var(--neon-green);">0</div>
+                            </div>
+                            <div class="card">
+                                <h3>Average Repair Time</h3>
+                                <div class="value" id="avgRepairTime" style="color: var(--neon-yellow); text-shadow: 0 0 20px var(--neon-yellow);">N/A</div>
+                            </div>
+                            <div class="card">
+                                <h3>Parts Used (Month)</h3>
+                                <div class="value" id="partsUsed" style="color: var(--neon-pink); text-shadow: 0 0 20px var(--neon-pink);">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Downtime Analysis Tab -->
+                    <div id="analyticsDowntime" class="analytics-tab hidden">
+                        <div class="cards">
+                            <div class="card">
+                                <h3>Total Downtime</h3>
+                                <div class="value" id="totalDowntime" style="color: var(--neon-red);">0h</div>
+                            </div>
+                            <div class="card">
+                                <h3>Average Per Asset</h3>
+                                <div class="value" id="avgDowntime" style="color: var(--neon-orange);">0h</div>
+                            </div>
+                            <div class="card">
+                                <h3>Most Affected Asset</h3>
+                                <div class="value" id="worstAsset" style="font-size: 1.25rem; color: var(--neon-pink);">N/A</div>
+                            </div>
+                            <div class="card">
+                                <h3>This Month</h3>
+                                <div class="value" id="monthDowntime" style="color: var(--neon-cyan);">0h</div>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <h3>Downtime by Asset</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Asset</th>
+                                        <th>Location</th>
+                                        <th>Total Downtime</th>
+                                        <th>Tickets</th>
+                                        <th>Avg Per Ticket</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="downtimeTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Failure Frequency Tab -->
+                    <div id="analyticsFailures" class="analytics-tab hidden">
+                        <div class="cards">
+                            <div class="card">
+                                <h3>Total Failures</h3>
+                                <div class="value" id="totalFailures" style="color: var(--neon-red);">0</div>
+                            </div>
+                            <div class="card">
+                                <h3>Most Failures</h3>
+                                <div class="value" id="mostFailures" style="font-size: 1.25rem; color: var(--neon-orange);">N/A</div>
+                            </div>
+                            <div class="card">
+                                <h3>This Month</h3>
+                                <div class="value" id="monthFailures" style="color: var(--neon-cyan);">0</div>
+                            </div>
+                            <div class="card">
+                                <h3>Critical Issues</h3>
+                                <div class="value" id="criticalFailures" style="color: var(--neon-red);">0</div>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <h3>Failure Frequency by Asset</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Asset</th>
+                                        <th>Category</th>
+                                        <th>Total Failures</th>
+                                        <th>Critical</th>
+                                        <th>High</th>
+                                        <th>Medium</th>
+                                        <th>Low</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="failuresTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Team Performance Tab -->
+                    <div id="analyticsTechnicians" class="analytics-tab hidden">
+                        <div class="card">
+                            <h3>Team Performance</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Assigned</th>
+                                        <th>In Progress</th>
+                                        <th>Closed</th>
+                                        <th>Close Rate</th>
+                                        <th>Avg Repair Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="techPerformanceBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Resolution Times Tab -->
+                    <div id="analyticsResolution" class="analytics-tab hidden">
+                        <div class="cards">
+                            <div class="card">
+                                <h3>Average Resolution</h3>
+                                <div class="value" id="avgResolution" style="color: var(--neon-cyan);">N/A</div>
+                            </div>
+                            <div class="card">
+                                <h3>Fastest Resolution</h3>
+                                <div class="value" id="fastestResolution" style="color: var(--neon-green);">N/A</div>
+                            </div>
+                            <div class="card">
+                                <h3>Slowest Resolution</h3>
+                                <div class="value" id="slowestResolution" style="color: var(--neon-red);">N/A</div>
+                            </div>
+                            <div class="card">
+                                <h3>This Month Avg</h3>
+                                <div class="value" id="monthAvgResolution" style="color: var(--neon-yellow);">N/A</div>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <h3>Resolution Times by Priority</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Priority</th>
+                                        <th>Tickets</th>
+                                        <th>Avg Time</th>
+                                        <th>Fastest</th>
+                                        <th>Slowest</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resolutionTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <h3>Resolution Times by Category</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Tickets</th>
+                                        <th>Avg Time</th>
+                                        <th>Fastest</th>
+                                        <th>Slowest</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resolutionCategoryBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Knowledge Base View -->
+                <div id="knowledgeView" class="view hidden">
+                    <div class="page-header">
+                        <h2>KNOWLEDGE BASE</h2>
+                        <button onclick="openArticleModal()" class="btn">+ New Article</button>
+                    </div>
+                    
+                    <div class="search-box">
+                        <input type="text" id="knowledgeSearch" placeholder="SEARCH DATABASE..." oninput="searchKnowledge()">
+                    </div>
+                    
+                    <div class="filter-container">
+                        <button class="filter-btn active" onclick="filterKnowledge('all')" id="kbFilterAll">All Categories</button>
+                        <button class="filter-btn" onclick="filterKnowledge('Troubleshooting')" id="kbFilterTroubleshooting">Troubleshooting</button>
+                        <button class="filter-btn" onclick="filterKnowledge('Maintenance')" id="kbFilterMaintenance">Maintenance</button>
+                        <button class="filter-btn" onclick="filterKnowledge('Setup')" id="kbFilterSetup">Setup</button>
+                        <button class="filter-btn" onclick="filterKnowledge('Safety')" id="kbFilterSafety">Safety</button>
+                    </div>
+                    
+                    <div id="knowledgeArticles"></div>
+                </div>
+
+                <!-- Users View (Admin only) -->
+                <div id="usersView" class="view hidden">
+                    <div class="page-header">
+                        <h2>USER CONTROL</h2>
+                        <button onclick="openUserModal()" class="btn">+ Add User</button>
+                    </div>
+                    <div class="card" style="padding: 0; background: transparent; border: none;">
+                        <table id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Ticket Modal -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>CREATE NEW TICKET</h3>
+                <button class="close-btn" onclick="closeModal('ticketModal')">&times;</button>
+            </div>
+            <form id="ticketForm">
+                <div class="form-group">
+                    <label>Asset *</label>
+                    <select id="ticketAsset" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Location *</label>
+                    <input type="text" id="ticketLocation" required placeholder="ENTER LOCATION">
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="ticketCategory" required>
+                        <option>Simulator</option>
+                        <option>Arcade</option>
+                        <option>PC</option>
+                        <option>VR</option>
+                        <option>Network</option>
+                        <option>Electrical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Problem Description *</label>
+                    <textarea id="ticketDescription" required placeholder="DESCRIBE ISSUE..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priority *</label>
+                    <select id="ticketPriority" required>
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Critical</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Submit Ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div id="ticketDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>TICKET DETAILS</h3>
+                <button class="close-btn" onclick="closeModal('ticketDetailModal')">&times;</button>
+            </div>
+            <div id="ticketDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- Add Part Modal -->
+    <div id="partModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ADD NEW PART</h3>
+                <button class="close-btn" onclick="closeModal('partModal')">&times;</button>
+            </div>
+            <form id="partForm">
+                <div class="form-group">
+                    <label>Part Name *</label>
+                    <input type="text" id="partName" required placeholder="PART DESIGNATION">
+                </div>
+                <div class="form-group">
+                    <label>SKU *</label>
+                    <input type="text" id="partSku" required placeholder="STOCK CODE">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="partCategory" placeholder="CATEGORY">
+                </div>
+                <div class="form-group">
+                    <label>Unit Cost *</label>
+                    <input type="number" step="0.01" id="partCost" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Quantity *</label>
+                    <input type="number" id="partQuantity" required placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>Reorder Level *</label>
+                    <input type="number" id="partReorder" required placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>Storage Location</label>
+                    <input type="text" id="partLocation" placeholder="LOCATION">
+                </div>
+                <button type="submit" class="btn">Add Part</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Asset Modal -->
+    <div id="assetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>REGISTER NEW ASSET</h3>
+                <button class="close-btn" onclick="closeModal('assetModal')">&times;</button>
+            </div>
+            <form id="assetForm">
+                <div class="form-group">
+                    <label>Asset Code *</label>
+                    <input type="text" id="assetCode" required placeholder="ASSET ID">
+                </div>
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" id="assetName" required placeholder="ASSET NAME">
+                </div>
+                <div class="form-group">
+                    <label>Model</label>
+                    <input type="text" id="assetModel" placeholder="MODEL NUMBER">
+                </div>
+                <div class="form-group">
+                    <label>Serial Number</label>
+                    <input type="text" id="assetSerial" placeholder="SERIAL">
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="assetLocation" placeholder="LOCATION">
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="assetCategory" required>
+                        <option>Simulator</option>
+                        <option>Arcade</option>
+                        <option>PC</option>
+                        <option>VR</option>
+                        <option>Network</option>
+                        <option>Electrical</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Register Asset</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ADD NEW USER</h3>
+                <button class="close-btn" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <form id="userForm">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" id="userName" required placeholder="FULL NAME">
+                </div>
+                <div class="form-group">
+                    <label>Username *</label>
+                    <input type="text" id="userUsername" required placeholder="USER_ID">
+                </div>
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" id="userPassword" required placeholder="ACCESS_KEY">
+                </div>
+                <div class="form-group">
+                    <label>Role *</label>
+                    <select id="userRole" required>
+                        <option value="staff">Staff</option>
+                        <option value="technician">Technician</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Create User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Assign Ticket Modal -->
+    <div id="assignModal" class="modal">
+        <div class="modal-content" id="assignModalContent">
+        </div>
+    </div>
+
+    <!-- Knowledge Base Article Modal -->
+    <div id="articleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="articleModalTitle">NEW ARTICLE</h3>
+                <button class="close-btn" onclick="closeModal('articleModal')">&times;</button>
+            </div>
+            <form id="articleForm">
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input type="text" id="articleTitle" required placeholder="ARTICLE TITLE">
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="articleCategory" required>
+                        <option>Troubleshooting</option>
+                        <option>Maintenance</option>
+                        <option>Setup</option>
+                        <option>Safety</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tags (comma-separated)</label>
+                    <input type="text" id="articleTags" placeholder="TAG1, TAG2, TAG3">
+                </div>
+                <div class="form-group">
+                    <label>Content *</label>
+                    <textarea id="articleContent" required style="min-height: 200px;" placeholder="ENTER KNOWLEDGE DATA..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Attach Images</label>
+                    <div id="imageDropZone" style="border: 2px dashed var(--neon-cyan); border-radius: 0; padding: 1.25rem; text-align: center; cursor: pointer; transition: all 0.2s ease; background: rgba(0, 243, 255, 0.05); clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));" onclick="document.getElementById('articleImages').click()" ondragover="event.preventDefault(); this.style.borderColor='var(--neon-pink)'; this.style.background='rgba(255, 0, 255, 0.1)';" ondragleave="this.style.borderColor='var(--neon-cyan)'; this.style.background='rgba(0, 243, 255, 0.05)';" ondrop="handleImageDrop(event)">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--neon-cyan);">📎</div>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin: 0; font-family: 'Orbitron', sans-serif;">CLICK TO BROWSE OR DRAG & DROP</p>
+                        <p style="color: var(--text-secondary); font-size: 0.75rem; margin: 0.25rem 0 0;">PNG, JPG, GIF, WEBP SUPPORTED</p>
+                    </div>
+                    <input type="file" id="articleImages" multiple accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
+                    <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem;"></div>
+                </div>
+                <button type="submit" class="btn" id="articleSubmitBtn">Save Article</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Article Modal -->
+    <div id="viewArticleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="viewArticleTitle">ARTICLE</h3>
+                <button class="close-btn" onclick="closeModal('viewArticleModal')">&times;</button>
+            </div>
+            <div id="viewArticleContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Data Storage (Local Storage simulation of database)
+        let currentUser = null;
+        let db = {
+            users: [],
+            tickets: [],
+            assets: [],
+            inventory: [],
+            ticketLogs: [],
+            partTransactions: [],
+            audit: [],
+            knowledgeBase: []
+        };
+
+        // Initialize default data
+        function initializeData() {
+            const stored = localStorage.getItem('simfinityDB');
+            if (stored) {
+                db = JSON.parse(stored);
+                // Ensure all properties exist (for backward compatibility with older saved data)
+                if (!db.knowledgeBase) db.knowledgeBase = [];
+                if (!db.ticketLogs) db.ticketLogs = [];
+                if (!db.partTransactions) db.partTransactions = [];
+                if (!db.audit) db.audit = [];
+                if (!db.users) db.users = [];
+                if (!db.tickets) db.tickets = [];
+                if (!db.assets) db.assets = [];
+                if (!db.inventory) db.inventory = [];
+                saveDB();
+            } else {
+                // Default admin user
+                db.users = [
+                    { id: 1, name: 'Admin', username: 'admin', password: 'admin', role: 'admin', status: true },
+                    { id: 2, name: 'John Tech', username: 'tech1', password: 'tech1', role: 'technician', status: true },
+                    { id: 3, name: 'Jane Staff', username: 'staff1', password: 'staff1', role: 'staff', status: true }
+                ];
+                
+                // Sample assets
+                db.assets = [
+                    { id: 1, code: 'SIM-001', name: 'Racing Simulator 1', model: 'RS-X500', serial: 'SN001', location: 'Floor 1', category: 'Simulator' },
+                    { id: 2, code: 'ARC-001', name: 'Street Fighter Cabinet', model: 'SF-II', serial: 'SN002', location: 'Floor 1', category: 'Arcade' },
+                    { id: 3, code: 'VR-001', name: 'VR Headset 1', model: 'Quest 3', serial: 'SN003', location: 'VR Zone', category: 'VR' }
+                ];
+                
+                // Sample inventory
+                db.inventory = [
+                    { id: 1, name: 'Monitor Cable', sku: 'CAB-001', category: 'Cables', cost: 15.50, quantity: 25, reorder: 10, location: 'Shelf A1' },
+                    { id: 2, name: 'Power Supply 500W', sku: 'PSU-500', category: 'Electrical', cost: 85.00, quantity: 5, reorder: 5, location: 'Shelf B2' },
+                    { id: 3, name: 'Joystick Assembly', sku: 'JOY-001', category: 'Arcade', cost: 45.00, quantity: 8, reorder: 5, location: 'Shelf C1' }
+                ];
+                
+                // Sample tickets
+                db.tickets = [
+                    { id: 1, number: 'SIM-2026-001', created: new Date().toISOString(), requester: 3, asset: 1, location: 'Floor 1', category: 'Simulator', description: 'Steering wheel not responding', priority: 'High', status: 'Open', assignedTo: null, closed: null },
+                    { id: 2, number: 'SIM-2026-002', created: new Date().toISOString(), requester: 3, asset: 2, location: 'Floor 1', category: 'Arcade', description: 'Player 2 button stuck', priority: 'Medium', status: 'Assigned', assignedTo: 2, closed: null }
+                ];
+                
+                // Sample knowledge base
+                db.knowledgeBase = [
+                    { id: 1, title: 'Racing Simulator Steering Wheel Calibration', category: 'Troubleshooting', tags: ['simulator', 'steering', 'calibration'], content: 'Step 1: Turn off the simulator completely.\nStep 2: Disconnect the steering wheel USB cable.\nStep 3: Wait 10 seconds.\nStep 4: Reconnect the USB cable.\nStep 5: Turn on the simulator and access the calibration menu.\nStep 6: Follow on-screen instructions to calibrate center position and rotation range.\n\nNote: If issue persists, check for firmware updates.', author: 1, created: new Date().toISOString(), updated: new Date().toISOString() },
+                    { id: 2, title: 'VR Headset Cleaning Procedure', category: 'Maintenance', tags: ['vr', 'cleaning', 'hygiene'], content: 'Daily Cleaning:\n- Wipe foam padding with alcohol-free antibacterial wipes\n- Clean lenses with microfiber cloth (lens cleaner if needed)\n- Allow to air dry for 5 minutes before next use\n\nWeekly Deep Clean:\n- Remove facial interface if detachable\n- Wash with mild soap and water\n- Dry completely before reattaching\n- Inspect straps for wear and tear\n\nWarning: Never use alcohol-based cleaners on lenses.', author: 1, created: new Date().toISOString(), updated: new Date().toISOString() },
+                    { id: 3, title: 'Arcade Cabinet Button Replacement', category: 'Setup', tags: ['arcade', 'buttons', 'repair'], content: 'Tools Needed:\n- Phillips screwdriver\n- New arcade button\n- Wire strippers (if needed)\n\nSteps:\n1. Turn off and unplug the arcade cabinet\n2. Open the control panel access door\n3. Locate the faulty button from inside\n4. Disconnect the two wire connectors (note orientation)\n5. Unscrew the retaining ring and remove old button\n6. Insert new button and secure with retaining ring\n7. Reconnect wire connectors (match colors)\n8. Test button before closing panel\n9. Close access door and restore power\n\nTip: Keep spare buttons in inventory (Part SKU: BTN-30MM)', author: 2, created: new Date().toISOString(), updated: new Date().toISOString() }
+                ];
+                
+                saveDB();
+            }
+        }
+
+        function saveDB() {
+            localStorage.setItem('simfinityDB', JSON.stringify(db));
+        }
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = db.users.find(u => u.username === username && u.password === password && u.status);
+            
+            if (user) {
+                currentUser = user;
+                showApp();
+            } else {
+                showAlert('ACCESS DENIED: INVALID CREDENTIALS', 'error', 'loginAlert');
+            }
+        });
+
+        function showApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('currentUserName').textContent = currentUser.name;
+            document.getElementById('currentUserRole').textContent = currentUser.role;
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('usersLink').classList.remove('hidden');
+            }
+            
+            loadDashboard();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        // Navigation
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            document.getElementById(viewName + 'View').classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            switch(viewName) {
+                case 'dashboard': loadDashboard(); break;
+                case 'tickets': 
+                    currentFilter = { type: 'all', value: null };
+                    loadTickets();
+                    setTimeout(() => {
+                        document.querySelectorAll('#ticketsView .filter-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                            btn.style.opacity = '0.6';
+                        });
+                        document.getElementById('filterAll').classList.add('active');
+                        document.getElementById('filterAll').style.opacity = '1';
+                    }, 0);
+                    break;
+                case 'inventory': loadInventory(); break;
+                case 'assets': loadAssets(); break;
+                case 'reports': 
+                    currentAnalyticsTab = 'overview';
+                    loadReports();
+                    setTimeout(() => {
+                        document.querySelectorAll('#reportsView .filter-btn').forEach(btn => {
+                            if (btn.id && btn.id.startsWith('tab')) {
+                                btn.classList.remove('active');
+                                btn.style.opacity = '0.6';
+                            }
+                        });
+                        document.getElementById('tabOverview').classList.add('active');
+                        document.getElementById('tabOverview').style.opacity = '1';
+                    }, 0);
+                    break;
+                case 'knowledge': 
+                    currentKBFilter = 'all';
+                    loadKnowledge();
+                    setTimeout(() => {
+                        document.querySelectorAll('#knowledgeView .filter-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                            btn.style.opacity = '0.6';
+                        });
+                        document.getElementById('kbFilterAll').classList.add('active');
+                        document.getElementById('kbFilterAll').style.opacity = '1';
+                    }, 0);
+                    break;
+                case 'users': loadUsers(); break;
+            }
+        }
+
+        // Load Dashboard
+        function loadDashboard() {
+            const openTickets = db.tickets.filter(t => t.status !== 'Closed').length;
+            const criticalTickets = db.tickets.filter(t => t.priority === 'Critical' && t.status !== 'Closed').length;
+            const myTickets = db.tickets.filter(t => t.assignedTo === currentUser.id && t.status !== 'Closed').length;
+            const lowStock = db.inventory.filter(i => i.quantity <= i.reorder).length;
+            
+            document.getElementById('openTicketsCount').textContent = openTickets;
+            document.getElementById('criticalCount').textContent = criticalTickets;
+            document.getElementById('myTicketsCount').textContent = myTickets;
+            document.getElementById('lowStockCount').textContent = lowStock;
+            
+            const recentTickets = db.tickets.slice(-10).reverse();
+            const tbody = document.querySelector('#recentTicketsTable tbody');
+            tbody.innerHTML = recentTickets.map(t => {
+                const asset = db.assets.find(a => a.id === t.asset);
+                const assigned = t.assignedTo ? db.users.find(u => u.id === t.assignedTo) : null;
+                return `
+                    <tr onclick="viewTicketDetail(${t.id})">
+                        <td>${t.number}</td>
+                        <td>${asset ? asset.name : 'N/A'}</td>
+                        <td>${t.category}</td>
+                        <td><span class="badge badge-${t.priority.toLowerCase()}">${t.priority}</span></td>
+                        <td><span class="badge badge-${t.status.toLowerCase().replace(' ', '')}">${t.status}</span></td>
+                        <td>${assigned ? assigned.name : 'Unassigned'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load Tickets
+        let currentFilter = { type: 'all', value: null };
+        
+        function filterTickets(type, value = null) {
+            currentFilter = { type, value };
+            
+            document.querySelectorAll('#ticketsView .filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.opacity = '0.6';
+            });
+            
+            if (type === 'all') {
+                document.getElementById('filterAll').classList.add('active');
+                document.getElementById('filterAll').style.opacity = '1';
+            } else if (type === 'status') {
+                const btnId = 'filter' + value.replace(' ', '');
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.classList.add('active');
+                    btn.style.opacity = '1';
+                }
+            } else if (type === 'priority') {
+                const btnId = 'filter' + value;
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.classList.add('active');
+                    btn.style.opacity = '1';
+                }
+            }
+            
+            loadTickets();
+        }
+        
+        function loadTickets() {
+            let tickets = db.tickets;
+            
+            if (currentUser.role === 'technician') {
+                tickets = tickets.filter(t => t.assignedTo === currentUser.id);
+            } else if (currentUser.role === 'staff') {
+                tickets = tickets.filter(t => t.requester === currentUser.id || t.assignedTo === currentUser.id);
+            }
+            
+            if (currentFilter.type === 'status') {
+                tickets = tickets.filter(t => t.status === currentFilter.value);
+            } else if (currentFilter.type === 'priority') {
+                tickets = tickets.filter(t => t.priority === currentFilter.value);
+            }
+            
+            const tbody = document.querySelector('#ticketsTable tbody');
+            tbody.innerHTML = tickets.map(t => {
+                const asset = db.assets.find(a => a.id === t.asset);
+                const assigned = t.assignedTo ? db.users.find(u => u.id === t.assignedTo) : null;
+                const canDelete = currentUser.role === 'admin';
+                const canAssign = currentUser.role === 'admin';
+                
+                let actions = `<button class="btn btn-sm" onclick="viewTicketDetail(${t.id})">View</button>`;
+                if (canAssign && t.status !== 'Closed') {
+                    actions += ` <button class="btn btn-sm btn-success" onclick="openAssignModal(${t.id})">Assign</button>`;
+                }
+                if (canDelete) {
+                    actions += ` <button class="btn btn-sm btn-danger" onclick="deleteTicket(${t.id})">Delete</button>`;
+                }
+                
+                return `
+                    <tr>
+                        <td>${t.number}</td>
+                        <td>${asset ? asset.name : 'N/A'}</td>
+                        <td>${t.location}</td>
+                        <td><span class="badge badge-${t.priority.toLowerCase()}">${t.priority}</span></td>
+                        <td><span class="badge badge-${t.status.toLowerCase().replace(' ', '')}">${t.status}</span></td>
+                        <td>${assigned ? assigned.name : 'Unassigned'}</td>
+                        <td>${actions}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // View Ticket Detail
+        function viewTicketDetail(ticketId) {
+            const ticket = db.tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            const asset = db.assets.find(a => a.id === ticket.asset);
+            const requester = db.users.find(u => u.id === ticket.requester);
+            const assigned = ticket.assignedTo ? db.users.find(u => u.id === ticket.assignedTo) : null;
+            const logs = db.ticketLogs.filter(l => l.ticketId === ticketId);
+            
+            let content = `
+                <div class="ticket-detail">
+                    <div class="info-row">
+                        <div class="info-label">Ticket #:</div>
+                        <div>${ticket.number}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Asset:</div>
+                        <div>${asset ? asset.name : 'N/A'}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Location:</div>
+                        <div>${ticket.location}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Priority:</div>
+                        <div><span class="badge badge-${ticket.priority.toLowerCase()}">${ticket.priority}</span></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Status:</div>
+                        <div><span class="badge badge-${ticket.status.toLowerCase().replace(' ', '')}">${ticket.status}</span></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Requester:</div>
+                        <div>${requester ? requester.name : 'N/A'}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Assigned To:</div>
+                        <div>${assigned ? assigned.name : 'Unassigned'}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Description:</div>
+                        <div>${ticket.description}</div>
+                    </div>
+                </div>
+            `;
+            
+            const canUpdate = currentUser.role === 'admin' || 
+                             currentUser.role === 'technician' || 
+                             (currentUser.role === 'staff' && ticket.assignedTo === currentUser.id);
+            
+            if (canUpdate) {
+                content += `
+                    <div class="card">
+                        <h3 style="margin-bottom: 1rem; color: var(--neon-cyan);">Add Update</h3>
+                        <form id="updateTicketForm" onsubmit="updateTicket(event, ${ticketId})">
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <textarea id="updateNote" required placeholder="ENTER UPDATE..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="updateStatus">
+                                    <option>Open</option>
+                                    <option>Assigned</option>
+                                    <option>In Progress</option>
+                                    <option>Waiting for Parts</option>
+                                    <option>Resolved</option>
+                                    <option>Closed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Labor Time (hours)</label>
+                                <input type="number" step="0.5" id="updateLabor" placeholder="0.0">
+                            </div>
+                            <div class="form-group">
+                                <label>Part Used</label>
+                                <select id="updatePart">
+                                    <option value="">None</option>
+                                    ${db.inventory.map(p => `<option value="${p.id}">${p.name} (Stock: ${p.quantity})</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="updatePartQty" min="1" placeholder="0">
+                            </div>
+                            <button type="submit" class="btn">Save Update</button>
+                        </form>
+                    </div>
+                `;
+            }
+            
+            if (logs.length > 0) {
+                content += `<h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--neon-cyan); font-family: Orbitron;">History Log</h3>`;
+                logs.forEach(log => {
+                    const user = db.users.find(u => u.id === log.userId);
+                    content += `
+                        <div class="history-item">
+                            <div class="timestamp">${new Date(log.created).toLocaleString()} // ${user ? user.name : 'Unknown'}</div>
+                            <div>${log.note}</div>
+                            ${log.laborTime ? `<div style="color: var(--neon-yellow); margin-top: 0.5rem;">Labor: ${log.laborTime} hrs</div>` : ''}
+                            ${log.statusChange ? `<div style="color: var(--neon-pink); margin-top: 0.5rem;">Status: ${log.statusChange}</div>` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            document.getElementById('ticketDetailContent').innerHTML = content;
+            document.getElementById('ticketDetailModal').classList.add('active');
+        }
+
+        function updateTicket(event, ticketId) {
+            event.preventDefault();
+            const ticket = db.tickets.find(t => t.id === ticketId);
+            const note = document.getElementById('updateNote').value;
+            const status = document.getElementById('updateStatus').value;
+            const labor = document.getElementById('updateLabor').value;
+            const partId = document.getElementById('updatePart').value;
+            const partQty = document.getElementById('updatePartQty').value;
+            
+            const log = {
+                id: db.ticketLogs.length + 1,
+                ticketId: ticketId,
+                userId: currentUser.id,
+                note: note,
+                laborTime: labor || null,
+                created: new Date().toISOString(),
+                statusChange: ticket.status !== status ? `${ticket.status} → ${status}` : null
+            };
+            
+            db.ticketLogs.push(log);
+            ticket.status = status;
+            
+            if (status === 'Closed') {
+                ticket.closed = new Date().toISOString();
+            }
+            
+            if (partId && partQty) {
+                const part = db.inventory.find(p => p.id === parseInt(partId));
+                if (part && part.quantity >= parseInt(partQty)) {
+                    part.quantity -= parseInt(partQty);
+                    db.partTransactions.push({
+                        id: db.partTransactions.length + 1,
+                        partId: parseInt(partId),
+                        ticketId: ticketId,
+                        type: 'Out',
+                        quantity: parseInt(partQty),
+                        userId: currentUser.id,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+            
+            saveDB();
+            showAlert('TICKET UPDATED SUCCESSFULLY', 'success');
+            closeModal('ticketDetailModal');
+            loadTickets();
+        }
+
+        // Load Inventory
+        function loadInventory() {
+            const tbody = document.querySelector('#inventoryTable tbody');
+            const canDelete = currentUser.role === 'admin' || currentUser.role === 'manager';
+            
+            tbody.innerHTML = db.inventory.map(i => {
+                const lowStock = i.quantity <= i.reorder ? ' low-stock' : '';
+                const deleteBtn = canDelete ? `<button class="btn btn-sm btn-danger" onclick="deleteInventory(${i.id})">Delete</button>` : '';
+                
+                return `
+                    <tr class="${lowStock}">
+                        <td>${i.name}</td>
+                        <td>${i.sku}</td>
+                        <td>${i.category}</td>
+                        <td style="${i.quantity <= i.reorder ? 'color: var(--neon-red); font-weight: bold;' : ''}">${i.quantity}</td>
+                        <td>${i.reorder}</td>
+                        <td style="color: var(--neon-green);">₱${i.cost.toFixed(2)}</td>
+                        <td>${i.location}</td>
+                        <td>${deleteBtn}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load Assets
+        function loadAssets() {
+            const tbody = document.querySelector('#assetsTable tbody');
+            const canDelete = currentUser.role === 'admin';
+            
+            tbody.innerHTML = db.assets.map(a => {
+                const deleteBtn = canDelete ? `<button class="btn btn-sm btn-danger" onclick="deleteAsset(${a.id})">Delete</button>` : '';
+                
+                return `
+                    <tr>
+                        <td style="color: var(--neon-cyan); font-family: Orbitron;">${a.code}</td>
+                        <td>${a.name}</td>
+                        <td>${a.model}</td>
+                        <td>${a.serial}</td>
+                        <td>${a.location}</td>
+                        <td><span class="badge badge-${a.category.toLowerCase()}">${a.category}</span></td>
+                        <td>${deleteBtn}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Analytics Tab Switching
+        let currentAnalyticsTab = 'overview';
+        
+        function switchAnalyticsTab(tab) {
+            currentAnalyticsTab = tab;
+            
+            document.querySelectorAll('.analytics-tab').forEach(t => t.classList.add('hidden'));
+            document.getElementById('analytics' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+            
+            document.querySelectorAll('#reportsView .filter-btn').forEach(btn => {
+                if (btn.id && btn.id.startsWith('tab')) {
+                    btn.classList.remove('active');
+                    btn.style.opacity = '0.6';
+                }
+            });
+            
+            const btnId = 'tab' + tab.charAt(0).toUpperCase() + tab.slice(1);
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.classList.add('active');
+                btn.style.opacity = '1';
+            }
+            
+            loadReports();
+        }
+        
+        // Load Reports
+        function loadReports() {
+            const total = db.tickets.length;
+            const closedTickets = db.tickets.filter(t => t.status === 'Closed' && t.closed);
+            const closed = closedTickets.length;
+            const partsUsed = db.partTransactions.filter(t => t.type === 'Out').length;
+
+            let avgTime = 'N/A';
+            let fastestTime = 'N/A';
+            let slowestTime = 'N/A';
+
+            if (closedTickets.length > 0) {
+                const durations = closedTickets.map(t => {
+                    const created = new Date(t.created);
+                    const closed = new Date(t.closed);
+                    return closed - created;
+                });
+
+                const totalTime = durations.reduce((sum, d) => sum + d, 0);
+                const avgMs = totalTime / durations.length;
+                const avgHours = Math.round(avgMs / (1000 * 60 * 60));
+                avgTime = `${avgHours}h`;
+
+                const minMs = Math.min(...durations);
+                const maxMs = Math.max(...durations);
+                const minHours = Math.max(1, Math.round(minMs / (1000 * 60 * 60)));
+                const maxHours = Math.max(1, Math.round(maxMs / (1000 * 60 * 60)));
+                fastestTime = `${minHours}h`;
+                slowestTime = `${maxHours}h`;
+            }
+
+            const downtimePerAsset = {};
+            closedTickets.forEach(t => {
+                const created = new Date(t.created);
+                const closed = new Date(t.closed);
+                const hours = (closed - created) / (1000 * 60 * 60);
+                if (!downtimePerAsset[t.asset]) {
+                    downtimePerAsset[t.asset] = 0;
+                }
+                downtimePerAsset[t.asset] += hours;
+            });
+
+            let totalDowntimeHours = 0;
+            let worstAssetId = null;
+            let worstAssetDowntime = 0;
+
+            Object.keys(downtimePerAsset).forEach(assetId => {
+                const hours = downtimePerAsset[assetId];
+                totalDowntimeHours += hours;
+                if (hours > worstAssetDowntime) {
+                    worstAssetDowntime = hours;
+                    worstAssetId = parseInt(assetId);
+                }
+            });
+
+            const worstAsset = worstAssetId ? db.assets.find(a => a.id === worstAssetId) : null;
+
+            const failuresPerAsset = {};
+            db.tickets.forEach(t => {
+                if (!failuresPerAsset[t.asset]) {
+                    failuresPerAsset[t.asset] = 0;
+                }
+                failuresPerAsset[t.asset] += 1;
+            });
+
+            let mostFailuresAssetId = null;
+            let mostFailuresCount = 0;
+            Object.keys(failuresPerAsset).forEach(assetId => {
+                const count = failuresPerAsset[assetId];
+                if (count > mostFailuresCount) {
+                    mostFailuresCount = count;
+                    mostFailuresAssetId = parseInt(assetId);
+                }
+            });
+
+            const mostFailureAsset = mostFailuresAssetId ? db.assets.find(a => a.id === mostFailuresAssetId) : null;
+
+            const techStats = {};
+            db.users
+                .filter(u => (u.role === 'technician' || u.role === 'staff') && u.status)
+                .forEach(tech => {
+                    const techTickets = db.tickets.filter(t => t.assignedTo === tech.id);
+                    const techClosed = techTickets.filter(t => t.status === 'Closed' && t.closed);
+                    let avgRepair = 'N/A';
+                    if (techClosed.length > 0) {
+                        const totalMs = techClosed.reduce((sum, t) => {
+                            const created = new Date(t.created);
+                            const closed = new Date(t.closed);
+                            return sum + (closed - created);
+                        }, 0);
+                        const avgMs = totalMs / techClosed.length;
+                        const avgHours = Math.round(avgMs / (1000 * 60 * 60));
+                        avgRepair = `${avgHours}h`;
+                    }
+                    techStats[tech.id] = {
+                        name: tech.name,
+                        role: tech.role,
+                        total: techTickets.length,
+                        closed: techClosed.length,
+                        avgRepair
+                    };
+                });
+
+            document.getElementById('totalTickets').textContent = total;
+            document.getElementById('closedTickets').textContent = closed;
+            document.getElementById('avgRepairTime').textContent = avgTime;
+            document.getElementById('partsUsed').textContent = partsUsed;
+
+            if (currentAnalyticsTab === 'downtime') {
+                document.getElementById('totalDowntime').textContent = `${Math.round(totalDowntimeHours)}h`;
+                const avgDowntimePerAsset = Object.keys(downtimePerAsset).length > 0 
+                    ? Math.round(totalDowntimeHours / Object.keys(downtimePerAsset).length) 
+                    : 0;
+                document.getElementById('avgDowntime').textContent = `${avgDowntimePerAsset}h`;
+                document.getElementById('worstAsset').textContent = worstAsset ? worstAsset.name : 'N/A';
+                
+                const thisMonth = new Date().getMonth();
+                const monthTickets = closedTickets.filter(t => new Date(t.closed).getMonth() === thisMonth);
+                const monthDowntime = monthTickets.reduce((sum, t) => {
+                    const created = new Date(t.created);
+                    const closed = new Date(t.closed);
+                    return sum + (closed - created) / (1000 * 60 * 60);
+                }, 0);
+                document.getElementById('monthDowntime').textContent = `${Math.round(monthDowntime)}h`;
+                
+                const downtimeTableBody = document.getElementById('downtimeTableBody');
+                if (downtimeTableBody) {
+                    const downtimeData = Object.keys(downtimePerAsset).map(assetId => {
+                        const asset = db.assets.find(a => a.id === parseInt(assetId));
+                        const tickets = closedTickets.filter(t => t.asset === parseInt(assetId));
+                        const totalHours = downtimePerAsset[assetId];
+                        const avgHours = totalHours / tickets.length;
+                        return {
+                            asset,
+                            totalHours,
+                            ticketCount: tickets.length,
+                            avgHours
+                        };
+                    }).sort((a, b) => b.totalHours - a.totalHours);
+                    
+                    downtimeTableBody.innerHTML = downtimeData.map(d => `
+                        <tr>
+                            <td style="color: var(--neon-cyan);">${d.asset ? d.asset.name : 'Unknown'}</td>
+                            <td>${d.asset ? d.asset.location : 'N/A'}</td>
+                            <td style="color: var(--neon-red);">${Math.round(d.totalHours)}h</td>
+                            <td>${d.ticketCount}</td>
+                            <td>${Math.round(d.avgHours)}h</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+            
+            if (currentAnalyticsTab === 'failures') {
+                document.getElementById('totalFailures').textContent = total;
+                document.getElementById('mostFailures').textContent = mostFailureAsset ? mostFailureAsset.name : 'N/A';
+                
+                const thisMonth = new Date().getMonth();
+                const monthTickets = db.tickets.filter(t => new Date(t.created).getMonth() === thisMonth);
+                document.getElementById('monthFailures').textContent = monthTickets.length;
+                
+                const criticalCount = db.tickets.filter(t => t.priority === 'Critical').length;
+                document.getElementById('criticalFailures').textContent = criticalCount;
+                
+                const failuresTableBody = document.getElementById('failuresTableBody');
+                if (failuresTableBody) {
+                    const failureData = Object.keys(failuresPerAsset).map(assetId => {
+                        const asset = db.assets.find(a => a.id === parseInt(assetId));
+                        const tickets = db.tickets.filter(t => t.asset === parseInt(assetId));
+                        return {
+                            asset,
+                            total: failuresPerAsset[assetId],
+                            critical: tickets.filter(t => t.priority === 'Critical').length,
+                            high: tickets.filter(t => t.priority === 'High').length,
+                            medium: tickets.filter(t => t.priority === 'Medium').length,
+                            low: tickets.filter(t => t.priority === 'Low').length
+                        };
+                    }).sort((a, b) => b.total - a.total);
+                    
+                    failuresTableBody.innerHTML = failureData.map(d => `
+                        <tr>
+                            <td style="color: var(--neon-cyan);">${d.asset ? d.asset.name : 'Unknown'}</td>
+                            <td>${d.asset ? d.asset.category : 'N/A'}</td>
+                            <td style="color: var(--neon-yellow);">${d.total}</td>
+                            <td style="color: var(--neon-red);">${d.critical}</td>
+                            <td style="color: var(--neon-orange);">${d.high}</td>
+                            <td style="color: var(--neon-yellow);">${d.medium}</td>
+                            <td style="color: var(--neon-cyan);">${d.low}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+            
+            if (currentAnalyticsTab === 'technicians') {
+                const techTableBody = document.getElementById('techPerformanceBody');
+                if (techTableBody) {
+                    const techData = Object.values(techStats).map(stat => {
+                        const inProgress = db.tickets.filter(t => 
+                            t.assignedTo === db.users.find(u => u.name === stat.name)?.id && 
+                            t.status !== 'Closed' && t.status !== 'Open'
+                        ).length;
+                        const closeRate = stat.total > 0 ? Math.round((stat.closed / stat.total) * 100) : 0;
+                        return { ...stat, inProgress, closeRate };
+                    });
+                    
+                    techTableBody.innerHTML = techData.map(stat => `
+                        <tr>
+                            <td style="color: var(--neon-cyan);">${stat.name}</td>
+                            <td><span class="badge badge-${stat.role}">${stat.role}</span></td>
+                            <td>${stat.total}</td>
+                            <td style="color: var(--neon-yellow);">${stat.inProgress}</td>
+                            <td style="color: var(--neon-green);">${stat.closed}</td>
+                            <td style="color: var(--neon-cyan);">${stat.closeRate}%</td>
+                            <td>${stat.avgRepair}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+            
+            if (currentAnalyticsTab === 'resolution') {
+                document.getElementById('avgResolution').textContent = avgTime;
+                document.getElementById('fastestResolution').textContent = fastestTime;
+                document.getElementById('slowestResolution').textContent = slowestTime;
+                
+                const thisMonth = new Date().getMonth();
+                const monthClosed = closedTickets.filter(t => new Date(t.closed).getMonth() === thisMonth);
+                let monthAvg = 'N/A';
+                if (monthClosed.length > 0) {
+                    const monthTotal = monthClosed.reduce((sum, t) => {
+                        const created = new Date(t.created);
+                        const closed = new Date(t.closed);
+                        return sum + (closed - created);
+                    }, 0);
+                    const monthAvgMs = monthTotal / monthClosed.length;
+                    const monthAvgHours = Math.round(monthAvgMs / (1000 * 60 * 60));
+                    monthAvg = `${monthAvgHours}h`;
+                }
+                document.getElementById('monthAvgResolution').textContent = monthAvg;
+                
+                const resolutionTableBody = document.getElementById('resolutionTableBody');
+                if (resolutionTableBody) {
+                    const priorities = ['Critical', 'High', 'Medium', 'Low'];
+                    const priorityData = priorities.map(priority => {
+                        const tickets = closedTickets.filter(t => t.priority === priority);
+                        if (tickets.length === 0) return { priority, count: 0, avg: 'N/A', fastest: 'N/A', slowest: 'N/A' };
+                        
+                        const durations = tickets.map(t => {
+                            const created = new Date(t.created);
+                            const closed = new Date(t.closed);
+                            return closed - created;
+                        });
+                        
+                        const avgMs = durations.reduce((sum, d) => sum + d, 0) / durations.length;
+                        const avgHours = Math.round(avgMs / (1000 * 60 * 60));
+                        const minHours = Math.max(1, Math.round(Math.min(...durations) / (1000 * 60 * 60)));
+                        const maxHours = Math.max(1, Math.round(Math.max(...durations) / (1000 * 60 * 60)));
+                        
+                        return {
+                            priority,
+                            count: tickets.length,
+                            avg: `${avgHours}h`,
+                            fastest: `${minHours}h`,
+                            slowest: `${maxHours}h`
+                        };
+                    });
+                    
+                    resolutionTableBody.innerHTML = priorityData.map(d => `
+                        <tr>
+                            <td><span class="badge badge-${d.priority.toLowerCase()}">${d.priority}</span></td>
+                            <td>${d.count}</td>
+                            <td style="color: var(--neon-cyan);">${d.avg}</td>
+                            <td style="color: var(--neon-green);">${d.fastest}</td>
+                            <td style="color: var(--neon-red);">${d.slowest}</td>
+                        </tr>
+                    `).join('');
+                }
+                
+                const resolutionCategoryBody = document.getElementById('resolutionCategoryBody');
+                if (resolutionCategoryBody) {
+                    const categories = ['Simulator', 'Arcade', 'PC', 'VR', 'Network', 'Electrical'];
+                    const categoryData = categories.map(category => {
+                        const tickets = closedTickets.filter(t => t.category === category);
+                        if (tickets.length === 0) return { category, count: 0, avg: 'N/A', fastest: 'N/A', slowest: 'N/A' };
+                        
+                        const durations = tickets.map(t => {
+                            const created = new Date(t.created);
+                            const closed = new Date(t.closed);
+                            return closed - created;
+                        });
+                        
+                        const avgMs = durations.reduce((sum, d) => sum + d, 0) / durations.length;
+                        const avgHours = Math.round(avgMs / (1000 * 60 * 60));
+                        const minHours = Math.max(1, Math.round(Math.min(...durations) / (1000 * 60 * 60)));
+                        const maxHours = Math.max(1, Math.round(Math.max(...durations) / (1000 * 60 * 60)));
+                        
+                        return {
+                            category,
+                            count: tickets.length,
+                            avg: `${avgHours}h`,
+                            fastest: `${minHours}h`,
+                            slowest: `${maxHours}h`
+                        };
+                    }).filter(d => d.count > 0);
+                    
+                    resolutionCategoryBody.innerHTML = categoryData.map(d => `
+                        <tr>
+                            <td style="color: var(--neon-cyan);">${d.category}</td>
+                            <td>${d.count}</td>
+                            <td style="color: var(--neon-cyan);">${d.avg}</td>
+                            <td style="color: var(--neon-green);">${d.fastest}</td>
+                            <td style="color: var(--neon-red);">${d.slowest}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+
+        // Load Users
+        function loadUsers() {
+            const tbody = document.querySelector('#usersTable tbody');
+            tbody.innerHTML = db.users.map(u => {
+                const canEdit = currentUser.role === 'admin';
+                const canDelete = currentUser.role === 'admin' && u.id !== currentUser.id;
+                
+                let actions = '';
+                if (canEdit) {
+                    actions += `<button class="btn btn-sm" onclick="editUser(${u.id})">Edit</button> `;
+                }
+                if (canDelete) {
+                    actions += `<button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id})">Delete</button>`;
+                }
+                
+                return `
+                    <tr>
+                        <td style="color: var(--neon-cyan);">${u.name}</td>
+                        <td>${u.username}</td>
+                        <td><span class="badge badge-${u.role}">${u.role}</span></td>
+                        <td style="color: ${u.status ? 'var(--neon-green)' : 'var(--neon-red)'};">${u.status ? 'ACTIVE' : 'INACTIVE'}</td>
+                        <td>${actions}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Modal Functions
+        function openTicketModal() {
+            const select = document.getElementById('ticketAsset');
+            select.innerHTML = db.assets.map(a => `<option value="${a.id}">${a.name} (${a.code})</option>`).join('');
+            document.getElementById('ticketModal').classList.add('active');
+        }
+
+        function openPartModal() {
+            document.getElementById('partModal').classList.add('active');
+        }
+
+        function openAssetModal() {
+            document.getElementById('assetModal').classList.add('active');
+        }
+
+        function openUserModal() {
+            editingUserId = null;
+            document.querySelector('#userModal .modal-header h3').textContent = 'ADD NEW USER';
+            document.getElementById('userForm').reset();
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function openArticleModal() {
+            editingArticleId = null;
+            document.getElementById('articleModalTitle').textContent = 'NEW ARTICLE';
+            document.getElementById('articleForm').reset();
+            document.getElementById('articleSubmitBtn').textContent = 'Create Article';
+            articleImageData = [];
+            renderImagePreviews();
+            document.getElementById('articleModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Assign Ticket Modal
+        function openAssignModal(ticketId) {
+            const ticket = db.tickets.find(t => t.id === ticketId);
+            const assignableUsers = db.users.filter(u => (u.role === 'technician' || u.role === 'staff') && u.status);
+            
+            const content = `
+                <div class="modal-header">
+                    <h3>ASSIGN TICKET ${ticket.number}</h3>
+                    <button class="close-btn" onclick="closeModal('assignModal')">&times;</button>
+                </div>
+                <form id="assignForm" onsubmit="assignTicket(event, ${ticketId})">
+                    <div class="form-group">
+                        <label>Assign To *</label>
+                        <select id="assignTech" required>
+                            <option value="">-- SELECT OPERATIVE --</option>
+                            ${assignableUsers.map(u => `<option value="${u.id}" ${ticket.assignedTo === u.id ? 'selected' : ''}>${u.name} [${u.role}]</option>`).join('')}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Execute Assignment</button>
+                </form>
+            `;
+            
+            document.getElementById('assignModalContent').innerHTML = content;
+            document.getElementById('assignModal').classList.add('active');
+        }
+
+        function assignTicket(event, ticketId) {
+            event.preventDefault();
+            const techId = parseInt(document.getElementById('assignTech').value);
+            const ticket = db.tickets.find(t => t.id === ticketId);
+            
+            ticket.assignedTo = techId;
+            if (ticket.status === 'Open') {
+                ticket.status = 'Assigned';
+            }
+            
+            db.ticketLogs.push({
+                id: db.ticketLogs.length + 1,
+                ticketId: ticketId,
+                userId: currentUser.id,
+                note: `Ticket assigned to ${db.users.find(u => u.id === techId).name}`,
+                laborTime: null,
+                created: new Date().toISOString(),
+                statusChange: null
+            });
+            
+            saveDB();
+            showAlert('TICKET ASSIGNED SUCCESSFULLY', 'success');
+            closeModal('assignModal');
+            loadTickets();
+            loadDashboard();
+        }
+
+        // Delete Functions
+        function deleteTicket(ticketId) {
+            if (confirm('CONFIRM DELETION: This action cannot be undone.')) {
+                db.tickets = db.tickets.filter(t => t.id !== ticketId);
+                db.ticketLogs = db.ticketLogs.filter(l => l.ticketId !== ticketId);
+                db.partTransactions = db.partTransactions.filter(pt => pt.ticketId !== ticketId);
+                saveDB();
+                showAlert('TICKET DELETED', 'success');
+                loadTickets();
+                loadDashboard();
+            }
+        }
+
+        function deleteInventory(partId) {
+            if (confirm('CONFIRM DELETION: Remove inventory item?')) {
+                db.inventory = db.inventory.filter(i => i.id !== partId);
+                db.partTransactions = db.partTransactions.filter(pt => pt.partId !== partId);
+                saveDB();
+                showAlert('INVENTORY ITEM DELETED', 'success');
+                loadInventory();
+            }
+        }
+
+        function deleteAsset(assetId) {
+            const hasTickets = db.tickets.some(t => t.asset === assetId);
+            if (hasTickets) {
+                alert('ERROR: Asset has associated tickets. Delete tickets first.');
+                return;
+            }
+            
+            if (confirm('CONFIRM DELETION: Remove asset from registry?')) {
+                db.assets = db.assets.filter(a => a.id !== assetId);
+                saveDB();
+                showAlert('ASSET DELETED', 'success');
+                loadAssets();
+            }
+        }
+
+        function deleteUser(userId) {
+            const hasTickets = db.tickets.some(t => t.requester === userId || t.assignedTo === userId);
+            if (hasTickets) {
+                alert('ERROR: User has ticket history.');
+                return;
+            }
+            
+            if (confirm('CONFIRM DELETION: Remove user account?')) {
+                db.users = db.users.filter(u => u.id !== userId);
+                saveDB();
+                showAlert('USER DELETED', 'success');
+                loadUsers();
+            }
+        }
+
+        function editUser(userId) {
+            const user = db.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            editingUserId = userId;
+            document.getElementById('userName').value = user.name;
+            document.getElementById('userUsername').value = user.username;
+            document.getElementById('userPassword').value = user.password;
+            document.getElementById('userRole').value = user.role;
+            
+            document.querySelector('#userModal .modal-header h3').textContent = 'EDIT USER';
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function handleUserFormSubmit(e) {
+            e.preventDefault();
+            
+            if (editingUserId) {
+                const user = db.users.find(u => u.id === editingUserId);
+                if (user) {
+                    user.name = document.getElementById('userName').value;
+                    user.username = document.getElementById('userUsername').value;
+                    user.password = document.getElementById('userPassword').value;
+                    user.role = document.getElementById('userRole').value;
+                    
+                    saveDB();
+                    showAlert('USER UPDATED', 'success');
+                }
+                editingUserId = null;
+            } else {
+                const user = {
+                    id: db.users.length + 1,
+                    name: document.getElementById('userName').value,
+                    username: document.getElementById('userUsername').value,
+                    password: document.getElementById('userPassword').value,
+                    role: document.getElementById('userRole').value,
+                    status: true
+                };
+                db.users.push(user);
+                saveDB();
+                showAlert('USER CREATED', 'success');
+            }
+            
+            closeModal('userModal');
+            document.getElementById('userForm').reset();
+            loadUsers();
+        }
+
+        // Form Submissions
+        document.getElementById('ticketForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const ticket = {
+                id: db.tickets.length + 1,
+                number: `SIM-${Date.now()}`,
+                created: new Date().toISOString(),
+                requester: currentUser.id,
+                asset: parseInt(document.getElementById('ticketAsset').value),
+                location: document.getElementById('ticketLocation').value,
+                category: document.getElementById('ticketCategory').value,
+                description: document.getElementById('ticketDescription').value,
+                priority: document.getElementById('ticketPriority').value,
+                status: 'Open',
+                assignedTo: null,
+                closed: null
+            };
+            db.tickets.push(ticket);
+            saveDB();
+            showAlert('TICKET CREATED SUCCESSFULLY', 'success');
+            closeModal('ticketModal');
+            document.getElementById('ticketForm').reset();
+            loadTickets();
+        });
+
+        document.getElementById('partForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const part = {
+                id: db.inventory.length + 1,
+                name: document.getElementById('partName').value,
+                sku: document.getElementById('partSku').value,
+                category: document.getElementById('partCategory').value,
+                cost: parseFloat(document.getElementById('partCost').value),
+                quantity: parseInt(document.getElementById('partQuantity').value),
+                reorder: parseInt(document.getElementById('partReorder').value),
+                location: document.getElementById('partLocation').value
+            };
+            db.inventory.push(part);
+            saveDB();
+            showAlert('PART ADDED TO INVENTORY', 'success');
+            closeModal('partModal');
+            document.getElementById('partForm').reset();
+            loadInventory();
+        });
+
+        document.getElementById('assetForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const asset = {
+                id: db.assets.length + 1,
+                code: document.getElementById('assetCode').value,
+                name: document.getElementById('assetName').value,
+                model: document.getElementById('assetModel').value,
+                serial: document.getElementById('assetSerial').value,
+                location: document.getElementById('assetLocation').value,
+                category: document.getElementById('assetCategory').value
+            };
+            db.assets.push(asset);
+            saveDB();
+            showAlert('ASSET REGISTERED', 'success');
+            closeModal('assetModal');
+            document.getElementById('assetForm').reset();
+            loadAssets();
+        });
+
+        document.getElementById('userForm').addEventListener('submit', handleUserFormSubmit);
+
+        // Knowledge Base Functions
+        let currentKBFilter = 'all';
+        let editingArticleId = null;
+        let editingUserId = null;
+        let articleImageData = [];
+
+        function handleImageSelect(event) {
+            const files = Array.from(event.target.files);
+            processImageFiles(files);
+            event.target.value = '';
+        }
+
+        function handleImageDrop(event) {
+            event.preventDefault();
+            document.getElementById('imageDropZone').style.borderColor = 'var(--neon-cyan)';
+            document.getElementById('imageDropZone').style.background = 'rgba(0, 243, 255, 0.05)';
+            const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+            processImageFiles(files);
+        }
+
+        function processImageFiles(files) {
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    articleImageData.push({ name: file.name, data: e.target.result });
+                    renderImagePreviews();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderImagePreviews() {
+            const container = document.getElementById('imagePreviewContainer');
+            if (!container) return;
+            container.innerHTML = articleImageData.map((img, i) => `
+                <div style="position: relative; display: inline-block;">
+                    <img src="${img.data}" alt="${img.name}" title="${img.name}" style="width: 90px; height: 70px; object-fit: cover; border: 1px solid var(--neon-cyan); display: block;">
+                    <button type="button" onclick="removeArticleImage(${i})" style="position: absolute; top: -6px; right: -6px; background: var(--neon-red); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; line-height: 1;">✕</button>
+                    <div style="font-size: 0.65rem; color: var(--text-secondary); text-align: center; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px;">${img.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function removeArticleImage(index) {
+            articleImageData.splice(index, 1);
+            renderImagePreviews();
+        }
+        
+        function loadKnowledge() {
+            let articles = db.knowledgeBase;
+            const searchTerm = document.getElementById('knowledgeSearch').value.toLowerCase();
+            
+            if (currentKBFilter !== 'all') {
+                articles = articles.filter(a => a.category === currentKBFilter);
+            }
+            
+            if (searchTerm) {
+                articles = articles.filter(a => 
+                    a.title.toLowerCase().includes(searchTerm) ||
+                    a.content.toLowerCase().includes(searchTerm) ||
+                    a.tags.some(t => t.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            const container = document.getElementById('knowledgeArticles');
+            
+            if (articles.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem; font-family: Orbitron;">NO DATA FOUND</p>';
+                return;
+            }
+            
+            container.innerHTML = articles.map(a => {
+                const author = db.users.find(u => u.id === a.author);
+                const preview = a.content.substring(0, 150) + (a.content.length > 150 ? '...' : '');
+                const canEdit = currentUser.role === 'admin' || currentUser.role === 'manager';
+                
+                return `
+                    <div class="article-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <h3 style="margin: 0; font-size: 1.25rem; color: var(--neon-cyan); cursor: pointer; font-family: Orbitron;" onclick="viewArticle(${a.id})">${a.title}</h3>
+                            ${canEdit ? `
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button class="btn btn-sm" onclick="editArticle(${a.id})">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteArticle(${a.id})">Delete</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem;">
+                            <span class="badge" style="background: var(--neon-purple); color: white; border-color: var(--neon-purple);">${a.category}</span>
+                            ${a.tags.map(t => `<span class="badge" style="background: rgba(0, 243, 255, 0.1); color: var(--neon-cyan); border-color: var(--neon-cyan);">${t}</span>`).join('')}
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.6;">${preview}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-secondary); font-family: Orbitron;">
+                            <span>// ${author ? author.name : 'Unknown'} // ${new Date(a.created).toLocaleDateString()}</span>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                ${a.images && a.images.length > 0 ? `<span style="color: var(--neon-cyan);">📎 ${a.images.length} IMG</span>` : ''}
+                                <button class="btn btn-sm" onclick="viewArticle(${a.id})" style="padding: 0.25rem 0.75rem;">Access</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function filterKnowledge(category) {
+            currentKBFilter = category;
+            
+            document.querySelectorAll('#knowledgeView .filter-btn').forEach(btn => {
+                if (btn.id && btn.id.startsWith('kbFilter')) {
+                    btn.classList.remove('active');
+                    btn.style.opacity = '0.6';
+                }
+            });
+            
+            const btnId = 'kbFilter' + (category === 'all' ? 'All' : category);
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.classList.add('active');
+                btn.style.opacity = '1';
+            }
+            
+            loadKnowledge();
+        }
+        
+        function searchKnowledge() {
+            loadKnowledge();
+        }
+        
+        function viewArticle(articleId) {
+            const article = db.knowledgeBase.find(a => a.id === articleId);
+            if (!article) return;
+            
+            const author = db.users.find(u => u.id === article.author);
+            
+            document.getElementById('viewArticleTitle').textContent = article.title;
+            document.getElementById('viewArticleContent').innerHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <span class="badge" style="background: var(--neon-purple); color: white; border-color: var(--neon-purple);">${article.category}</span>
+                    ${article.tags.map(t => `<span class="badge" style="background: rgba(0, 243, 255, 0.1); color: var(--neon-cyan); border-color: var(--neon-cyan); margin-left: 0.5rem;">${t}</span>`).join('')}
+                </div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem; font-family: Orbitron;">
+                    // ${author ? author.name : 'Unknown'} // ${new Date(article.created).toLocaleDateString()}
+                    ${article.updated !== article.created ? ` // UPDATED ${new Date(article.updated).toLocaleDateString()}` : ''}
+                </div>
+                <div style="white-space: pre-wrap; line-height: 1.8; color: var(--text-primary);">${article.content}</div>
+                ${article.images && article.images.length > 0 ? `
+                <div style="margin-top: 1.5rem; border-top: 1px solid rgba(0, 243, 255, 0.3); padding-top: 1.5rem;">
+                    <p style="font-weight: 600; margin-bottom: 0.75rem; color: var(--neon-cyan); font-family: Orbitron;">📎 ATTACHED IMAGES (${article.images.length})</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                        ${article.images.map((img, i) => `
+                            <div style="position: relative; cursor: pointer;" onclick="openImageLightbox('${img.data}', '${img.name}')">
+                                <img src="${img.data}" alt="${img.name}" style="width: 120px; height: 90px; object-fit: cover; border: 1px solid var(--neon-cyan); transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 20px var(--neon-cyan)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                                <div style="font-size: 0.65rem; color: var(--text-secondary); text-align: center; margin-top: 0.25rem; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${img.name}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>` : ''}
+            `;
+            document.getElementById('viewArticleModal').classList.add('active');
+        }
+        
+        function openImageLightbox(src, name) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,10,15,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;';
+            overlay.onclick = () => document.body.removeChild(overlay);
+            overlay.innerHTML = `
+                <img src="${src}" alt="${name}" style="max-width:90vw;max-height:80vh;border:2px solid var(--neon-cyan);box-shadow:0 0 40px var(--neon-cyan);">
+                <p style="color:var(--neon-cyan);font-size:0.875rem;font-family:Orbitron;">${name} // CLICK TO CLOSE</p>
+            `;
+            document.body.appendChild(overlay);
+        }
+        
+        function editArticle(articleId) {
+            const article = db.knowledgeBase.find(a => a.id === articleId);
+            if (!article) return;
+            
+            editingArticleId = articleId;
+            document.getElementById('articleModalTitle').textContent = 'EDIT ARTICLE';
+            document.getElementById('articleTitle').value = article.title;
+            document.getElementById('articleCategory').value = article.category;
+            document.getElementById('articleTags').value = article.tags.join(', ');
+            document.getElementById('articleContent').value = article.content;
+            document.getElementById('articleSubmitBtn').textContent = 'Update Article';
+            
+            articleImageData = article.images ? [...article.images] : [];
+            renderImagePreviews();
+            
+            document.getElementById('articleModal').classList.add('active');
+        }
+        
+        function deleteArticle(articleId) {
+            if (confirm('CONFIRM DELETION: Remove knowledge base article?')) {
+                db.knowledgeBase = db.knowledgeBase.filter(a => a.id !== articleId);
+                saveDB();
+                showAlert('ARTICLE DELETED', 'success');
+                loadKnowledge();
+            }
+        }
+
+        // Alert Function
+        function showAlert(message, type, containerId = 'alertContainer') {
+            const container = document.getElementById(containerId);
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+        }
+
+        // Initialize
+        initializeData();
+        
+        // Set up article form event listener
+        const articleForm = document.getElementById('articleForm');
+        if (articleForm) {
+            articleForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                try {
+                    if (editingArticleId) {
+                        const article = db.knowledgeBase.find(a => a.id === editingArticleId);
+                        if (article) {
+                            article.title = document.getElementById('articleTitle').value;
+                            article.category = document.getElementById('articleCategory').value;
+                            article.tags = document.getElementById('articleTags').value.split(',').map(t => t.trim()).filter(t => t);
+                            article.content = document.getElementById('articleContent').value;
+                            article.images = [...articleImageData];
+                            article.updated = new Date().toISOString();
+                            
+                            saveDB();
+                            showAlert('ARTICLE UPDATED', 'success');
+                        }
+                        editingArticleId = null;
+                    } else {
+                        const article = {
+                            id: db.knowledgeBase.length + 1,
+                            title: document.getElementById('articleTitle').value,
+                            category: document.getElementById('articleCategory').value,
+                            tags: document.getElementById('articleTags').value.split(',').map(t => t.trim()).filter(t => t),
+                            content: document.getElementById('articleContent').value,
+                            images: [...articleImageData],
+                            author: currentUser ? currentUser.id : 1,
+                            created: new Date().toISOString(),
+                            updated: new Date().toISOString()
+                        };
+                        db.knowledgeBase.push(article);
+                        saveDB();
+                        showAlert('ARTICLE CREATED', 'success');
+                    }
+                    
+                    closeModal('articleModal');
+                    document.getElementById('articleForm').reset();
+                    document.getElementById('articleModalTitle').textContent = 'NEW ARTICLE';
+                    document.getElementById('articleSubmitBtn').textContent = 'Create Article';
+                    articleImageData = [];
+                    renderImagePreviews();
+                    loadKnowledge();
+                } catch (error) {
+                    console.error('Error in article form submission:', error);
+                    showAlert('ERROR: ' + error.message, 'error');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
