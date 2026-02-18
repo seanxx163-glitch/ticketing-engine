@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMFINITY // MAINTENANCE SYSTEM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="grid-background"></div>
+    <div class="particles" id="particles"></div>
+    <div class="scanlines"></div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h2 class="glitch" data-text="SIMFINITY">SIMFINITY</h2>
+            <div class="subtitle">Maintenance System v2.0</div>
+            <div id="loginAlert"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" required placeholder="ENTER USER_ID">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="ENTER ACCESS_KEY">
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Initialize Session</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="hidden">
+        <div class="navbar">
+            <h1>◈ SIMFINITY ◈</h1>
+            <div class="user-info">
+                <span style="color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan);">
+                    <span style="color: var(--neon-pink);">◉</span> <span id="currentUserName"></span>
+                    <span style="color: var(--text-secondary);">[</span><span id="currentUserRole"></span><span style="color: var(--text-secondary);">]</span>
+                </span>
+                <button onclick="logout()" class="btn btn-danger btn-sm">Terminate</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="sidebar">
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showView('dashboard')" class="nav-link active">◈ Dashboard</a></li>
+                        <li><a href="#" onclick="showView('tickets')" class="nav-link">◈ Tickets</a></li>
+                        <li><a href="#" onclick="showView('inventory')" class="nav-link">◈ Inventory</a></li>
+                        <li><a href="#" onclick="showView('assets')" class="nav-link">◈ Assets</a></li>
+                        <li><a href="#" onclick="showView('reports')" class="nav-link">◈ Reports</a></li>
+                        <li><a href="#" onclick="showView('knowledge')" class="nav-link">◈ Knowledge Base</a></li>
+                        <li id="usersLink" class="hidden"><a href="#" onclick="showView('users')" class="nav-link">◈ User Control</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="main-content">
+                <div id="alertContainer"></div>
+
+                <!-- Dashboard View -->
+                <div id="dashboardView" class="view">
+                    <div class="page-header">
+                        <h2>SYSTEM OVERVIEW</h2>
+                    </div>
+                    <div class="cards">
+                        <div class="card">
+                            <h3>Open Tickets</h3>
+                            <div class="value" id="openTicketsCount">0</div>
+                        </div>
+                        <div class="card">
+                            <h3>Critical Issues</h3>
+                            <div class="value" id="criticalCount" style="color: var(--neon-red); text-shadow: 0 0 20px var(--neon-red);">0</div>
+                        </div>
+                        <div class="card">
+                            <h3>My Assigned</h3>
+                            <div class="value" id="myTicketsCount" style="color: var(--neon-green); text-shadow: 0 0 20px var(--neon-green);">0</div>
+                        </div>
+                        <div class="card">
+                            <h3>Low Stock Items</h3>
+                            <div class="value" id="lowStockCount" style="color: var(--neon-yellow); text-shadow: 0 0 20px var(--neon-yellow);">0</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom: 1rem;">Recent Tickets</h3>
+                        <table id="recentTicketsTable">
+                            <thead>
+                                <tr>
+                                    <th>Ticket #</th>
+                                    <th>Asset</th>
+                                    <th>Category</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Assigned To</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tickets View -->
+                <div id="ticketsView" class="view hidden">
+                    <div class="page-header">
+                        <h2>TICKET MANAGEMENT</h2>
+                        <button onclick="openTicketModal()" class="btn">+ New Ticket</button>
+                    </div>
+                    <div class="filter-container">
+                        <button class="filter-btn active" onclick="filterTickets('all')" id="filterAll">All Tickets</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'Open')" id="filterOpen">Open</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'Assigned')" id="filterAssigned">Assigned</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'In Progress')" id="filterProgress">In Progress</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'Resolved')" id="filterResolved">Resolved</button>
+                        <button class="filter-btn" onclick="filterTickets('status', 'Closed')" id="filterClosed">Closed</button>
+                        <span style="width: 20px;"></span>
+                        <button class="filter-btn" onclick="filterTickets('priority', 'Critical')" id="filterCritical" style="border-color: var(--neon-red); color: var(--neon-red);">Critical</button>
+                        <button class="filter-btn" onclick="filterTickets('priority', 'High')" id="filterHigh" style="border-color: var(--neon-orange); color: var(--neon-orange);">High</button>
+                        <button class="filter-btn" onclick="filterTickets('priority', 'Medium')" id="filterMedium" style="border-color: var(--neon-yellow); color: var(--neon-yellow);">Medium</button>
+                        <button class="filter-btn" onclick="filterTickets('priority', 'Low')" id="filterLow" style="border-color: var(--neon-cyan); color: var(--neon-cyan);">Low</button>
+                    </div>
+                    <div class="card" style="padding: 0; background: transparent; border: none;">
+                        <table id="ticketsTable">
+                            <thead>
+                                <tr>
+                                    <th>Ticket #</th>
+                                    <th>Asset</th>
+                                    <th>Location</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Assigned To</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Inventory View -->
+                <div id="inventoryView" class="view hidden">
+                    <div class="page-header">
+                        <h2>INVENTORY DATABASE</h2>
+                        <button onclick="openPartModal()" class="btn">+ Add Part</button>
+                    </div>
+                    <div class="card" style="padding: 0; background: transparent; border: none;">
+                        <table id="inventoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Part Name</th>
+                                    <th>SKU</th>
+                                    <th>Category</th>
+                                    <th>Stock</th>
+                                    <th>Reorder Level</th>
+                                    <th>Unit Cost</th>
+                                    <th>Location</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Assets View -->
+                <div id="assetsView" class="view hidden">
+                    <div class="page-header">
+                        <h2>ASSET REGISTRY</h2>
+                        <button onclick="openAssetModal()" class="btn">+ Add Asset</button>
+                    </div>
+                    <div class="card" style="padding: 0; background: transparent; border: none;">
+                        <table id="assetsTable">
+                            <thead>
+                                <tr>
+                                    <th>Asset Code</th>
+                                    <th>Name</th>
+                                    <th>Model</th>
+                                    <th>Serial Number</th>
+                                    <th>Location</th>
+                                    <th>Category</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Reports View -->
+                <div id="reportsView" class="view hidden">
+                    <div class="page-header">
+                        <h2>ANALYTICS & REPORTS</h2>
+                    </div>
+                    <div class="filter-container">
+                        <button class="filter-btn active" onclick="switchAnalyticsTab('overview')" id="tabOverview">Overview</button>
+                        <button class="filter-btn" onclick="switchAnalyticsTab('downtime')" id="tabDowntime">Downtime Analysis</button>
+                        <button class="filter-btn" onclick="switchAnalyticsTab('failures')" id="tabFailures">Failure Frequency</button>
+                        <button class="filter-btn" onclick="switchAnalyticsTab('technicians')" id="tabTechnicians">Team Performance</button>
+                        <button class="filter-btn" onclick="switchAnalyticsTab('resolution')" id="tabResolution">Resolution Times</button>
+                    </div>
+                    <div id="analyticsOverview" class="analytics-tab">
+                        <div class="cards">
+                            <div class="card"><h3>Total Tickets</h3><div class="value" id="totalTickets">0</div></div>
+                            <div class="card"><h3>Closed Tickets</h3><div class="value" id="closedTickets" style="color: var(--neon-green); text-shadow: 0 0 20px var(--neon-green);">0</div></div>
+                            <div class="card"><h3>Average Repair Time</h3><div class="value" id="avgRepairTime" style="color: var(--neon-yellow); text-shadow: 0 0 20px var(--neon-yellow);">N/A</div></div>
+                            <div class="card"><h3>Parts Used (Month)</h3><div class="value" id="partsUsed" style="color: var(--neon-pink); text-shadow: 0 0 20px var(--neon-pink);">0</div></div>
+                        </div>
+                    </div>
+                    <div id="analyticsDowntime" class="analytics-tab hidden">
+                        <div class="cards">
+                            <div class="card"><h3>Total Downtime</h3><div class="value" id="totalDowntime" style="color: var(--neon-red);">0h</div></div>
+                            <div class="card"><h3>Average Per Asset</h3><div class="value" id="avgDowntime" style="color: var(--neon-orange);">0h</div></div>
+                            <div class="card"><h3>Most Affected Asset</h3><div class="value" id="worstAsset" style="font-size: 1.25rem; color: var(--neon-pink);">N/A</div></div>
+                            <div class="card"><h3>This Month</h3><div class="value" id="monthDowntime" style="color: var(--neon-cyan);">0h</div></div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <h3>Downtime by Asset</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead><tr><th>Asset</th><th>Location</th><th>Total Downtime</th><th>Tickets</th><th>Avg Per Ticket</th></tr></thead>
+                                <tbody id="downtimeTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="analyticsFailures" class="analytics-tab hidden">
+                        <div class="cards">
+                            <div class="card"><h3>Total Failures</h3><div class="value" id="totalFailures" style="color: var(--neon-red);">0</div></div>
+                            <div class="card"><h3>Most Failures</h3><div class="value" id="mostFailures" style="font-size: 1.25rem; color: var(--neon-orange);">N/A</div></div>
+                            <div class="card"><h3>This Month</h3><div class="value" id="monthFailures" style="color: var(--neon-cyan);">0</div></div>
+                            <div class="card"><h3>Critical Issues</h3><div class="value" id="criticalFailures" style="color: var(--neon-red);">0</div></div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <h3>Failure Frequency by Asset</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead><tr><th>Asset</th><th>Category</th><th>Total Failures</th><th>Critical</th><th>High</th><th>Medium</th><th>Low</th></tr></thead>
+                                <tbody id="failuresTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="analyticsTechnicians" class="analytics-tab hidden">
+                        <div class="card">
+                            <h3>Team Performance</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead><tr><th>Name</th><th>Role</th><th>Assigned</th><th>In Progress</th><th>Closed</th><th>Close Rate</th><th>Avg Repair Time</th></tr></thead>
+                                <tbody id="techPerformanceBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="analyticsResolution" class="analytics-tab hidden">
+                        <div class="cards">
+                            <div class="card"><h3>Average Resolution</h3><div class="value" id="avgResolution" style="color: var(--neon-cyan);">N/A</div></div>
+                            <div class="card"><h3>Fastest Resolution</h3><div class="value" id="fastestResolution" style="color: var(--neon-green);">N/A</div></div>
+                            <div class="card"><h3>Slowest Resolution</h3><div class="value" id="slowestResolution" style="color: var(--neon-red);">N/A</div></div>
+                            <div class="card"><h3>This Month Avg</h3><div class="value" id="monthAvgResolution" style="color: var(--neon-yellow);">N/A</div></div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <h3>Resolution Times by Priority</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead><tr><th>Priority</th><th>Tickets</th><th>Avg Time</th><th>Fastest</th><th>Slowest</th></tr></thead>
+                                <tbody id="resolutionTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <h3>Resolution Times by Category</h3>
+                            <table style="margin-top: 0.75rem;">
+                                <thead><tr><th>Category</th><th>Tickets</th><th>Avg Time</th><th>Fastest</th><th>Slowest</th></tr></thead>
+                                <tbody id="resolutionCategoryBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Knowledge Base View -->
+                <div id="knowledgeView" class="view hidden">
+                    <div class="page-header">
+                        <h2>KNOWLEDGE BASE</h2>
+                        <button onclick="openArticleModal()" class="btn">+ New Article</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="knowledgeSearch" placeholder="SEARCH DATABASE..." oninput="searchKnowledge()">
+                    </div>
+                    <div class="filter-container">
+                        <button class="filter-btn active" onclick="filterKnowledge('all')" id="kbFilterAll">All Categories</button>
+                        <button class="filter-btn" onclick="filterKnowledge('Troubleshooting')" id="kbFilterTroubleshooting">Troubleshooting</button>
+                        <button class="filter-btn" onclick="filterKnowledge('Maintenance')" id="kbFilterMaintenance">Maintenance</button>
+                        <button class="filter-btn" onclick="filterKnowledge('Setup')" id="kbFilterSetup">Setup</button>
+                        <button class="filter-btn" onclick="filterKnowledge('Safety')" id="kbFilterSafety">Safety</button>
+                    </div>
+                    <div id="knowledgeArticles"></div>
+                </div>
+
+                <!-- Users View (Admin only) -->
+                <div id="usersView" class="view hidden">
+                    <div class="page-header">
+                        <h2>USER CONTROL</h2>
+                        <button onclick="openUserModal()" class="btn">+ Add User</button>
+                    </div>
+                    <div class="card" style="padding: 0; background: transparent; border: none;">
+                        <table id="usersTable">
+                            <thead>
+                                <tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>CREATE NEW TICKET</h3>
+                <button class="close-btn" onclick="closeModal('ticketModal')">&times;</button>
+            </div>
+            <form id="ticketForm">
+                <div class="form-group"><label>Asset *</label><select id="ticketAsset" required></select></div>
+                <div class="form-group"><label>Location *</label><input type="text" id="ticketLocation" required placeholder="ENTER LOCATION"></div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="ticketCategory" required>
+                        <option>Simulator</option><option>Arcade</option><option>PC</option>
+                        <option>VR</option><option>Network</option><option>Electrical</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Problem Description *</label><textarea id="ticketDescription" required placeholder="DESCRIBE ISSUE..."></textarea></div>
+                <div class="form-group">
+                    <label>Priority *</label>
+                    <select id="ticketPriority" required>
+                        <option>Low</option><option>Medium</option><option>High</option><option>Critical</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Submit Ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="ticketDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>TICKET DETAILS</h3>
+                <button class="close-btn" onclick="closeModal('ticketDetailModal')">&times;</button>
+            </div>
+            <div id="ticketDetailContent"></div>
+        </div>
+    </div>
+
+    <div id="partModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ADD NEW PART</h3>
+                <button class="close-btn" onclick="closeModal('partModal')">&times;</button>
+            </div>
+            <form id="partForm">
+                <div class="form-group"><label>Part Name *</label><input type="text" id="partName" required placeholder="PART DESIGNATION"></div>
+                <div class="form-group"><label>SKU *</label><input type="text" id="partSku" required placeholder="STOCK CODE"></div>
+                <div class="form-group"><label>Category</label><input type="text" id="partCategory" placeholder="CATEGORY"></div>
+                <div class="form-group"><label>Unit Cost *</label><input type="number" step="0.01" id="partCost" required placeholder="0.00"></div>
+                <div class="form-group"><label>Quantity *</label><input type="number" id="partQuantity" required placeholder="0"></div>
+                <div class="form-group"><label>Reorder Level *</label><input type="number" id="partReorder" required placeholder="0"></div>
+                <div class="form-group"><label>Storage Location</label><input type="text" id="partLocation" placeholder="LOCATION"></div>
+                <button type="submit" class="btn">Add Part</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="assetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>REGISTER NEW ASSET</h3>
+                <button class="close-btn" onclick="closeModal('assetModal')">&times;</button>
+            </div>
+            <form id="assetForm">
+                <div class="form-group"><label>Asset Code *</label><input type="text" id="assetCode" required placeholder="ASSET ID"></div>
+                <div class="form-group"><label>Name *</label><input type="text" id="assetName" required placeholder="ASSET NAME"></div>
+                <div class="form-group"><label>Model</label><input type="text" id="assetModel" placeholder="MODEL NUMBER"></div>
+                <div class="form-group"><label>Serial Number</label><input type="text" id="assetSerial" placeholder="SERIAL"></div>
+                <div class="form-group"><label>Location</label><input type="text" id="assetLocation" placeholder="LOCATION"></div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="assetCategory" required>
+                        <option>Simulator</option><option>Arcade</option><option>PC</option>
+                        <option>VR</option><option>Network</option><option>Electrical</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Register Asset</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ADD NEW USER</h3>
+                <button class="close-btn" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <form id="userForm">
+                <div class="form-group"><label>Name *</label><input type="text" id="userName" required placeholder="FULL NAME"></div>
+                <div class="form-group"><label>Username *</label><input type="text" id="userUsername" required placeholder="USER_ID"></div>
+                <div class="form-group"><label>Password *</label><input type="password" id="userPassword" required placeholder="ACCESS_KEY"></div>
+                <div class="form-group">
+                    <label>Role *</label>
+                    <select id="userRole" required>
+                        <option value="staff">Staff</option><option value="technician">Technician</option>
+                        <option value="manager">Manager</option><option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Create User</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="assignModal" class="modal">
+        <div class="modal-content" id="assignModalContent"></div>
+    </div>
+
+    <div id="articleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="articleModalTitle">NEW ARTICLE</h3>
+                <button class="close-btn" onclick="closeModal('articleModal')">&times;</button>
+            </div>
+            <form id="articleForm">
+                <div class="form-group"><label>Title *</label><input type="text" id="articleTitle" required placeholder="ARTICLE TITLE"></div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="articleCategory" required>
+                        <option>Troubleshooting</option><option>Maintenance</option><option>Setup</option><option>Safety</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Tags (comma-separated)</label><input type="text" id="articleTags" placeholder="TAG1, TAG2, TAG3"></div>
+                <div class="form-group"><label>Content *</label><textarea id="articleContent" required style="min-height: 200px;" placeholder="ENTER KNOWLEDGE DATA..."></textarea></div>
+                <div class="form-group">
+                    <label>Attach Images</label>
+                    <div id="imageDropZone"
+                        style="border: 2px dashed var(--neon-cyan); padding: 1.25rem; text-align: center; cursor: pointer; transition: all 0.2s ease; background: rgba(0, 243, 255, 0.05); clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));"
+                        onclick="document.getElementById('articleImages').click()"
+                        ondragover="event.preventDefault(); this.style.borderColor='var(--neon-pink)'; this.style.background='rgba(255, 0, 255, 0.1)';"
+                        ondragleave="this.style.borderColor='var(--neon-cyan)'; this.style.background='rgba(0, 243, 255, 0.05)';"
+                        ondrop="handleImageDrop(event)">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--neon-cyan);">📎</div>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin: 0; font-family: 'Orbitron', sans-serif;">CLICK TO BROWSE OR DRAG & DROP</p>
+                        <p style="color: var(--text-secondary); font-size: 0.75rem; margin: 0.25rem 0 0;">PNG, JPG, GIF, WEBP SUPPORTED</p>
+                    </div>
+                    <input type="file" id="articleImages" multiple accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
+                    <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem;"></div>
+                </div>
+                <button type="submit" class="btn" id="articleSubmitBtn">Save Article</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="viewArticleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="viewArticleTitle">ARTICLE</h3>
+                <button class="close-btn" onclick="closeModal('viewArticleModal')">&times;</button>
+            </div>
+            <div id="viewArticleContent"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
